@@ -1,0 +1,50 @@
+#include "userthread.h"
+#ifdef USER_PROGRAM
+#include "system.h"
+#endif
+
+extern int do_ThreadCreate(int f, int arg){
+  currentThread->space->addNbThreadRunning();
+
+  Thread* newThread = new Thread("Thread Test");
+
+  struct ftion* myfunction = (struct ftion*) malloc(sizeof(struct ftion));
+  myfunction->f = f;
+  myfunction->arg = arg;
+
+  newThread->Start(StartUserThread, myfunction);
+  return 0;
+}
+
+extern void do_ThreadExit(void){
+
+  currentThread->space->subNbThreadRunning();
+  //TO DO Desallocate Stack
+
+  currentThread->Finish();
+}
+
+static void StartUserThread(void *schmurtz){
+
+  struct ftion* myfunction = (struct ftion*) schmurtz;
+
+
+  machine->WriteRegister(PCReg, myfunction->f);
+  machine->WriteRegister(4, myfunction->arg);
+
+  //First instruction of the function (sizeof(void *) = 4)
+  machine->WriteRegister(NextPCReg, myfunction->f+4);
+
+
+  //Stack allocation
+  // Set the stack register to the end of the address space, where we
+  // allocated the stack; but subtract off a bit, to make sure we don't
+  // accidentally reference off the end!
+  unsigned int topStackPtr = currentThread->space->AllocateUserStack();
+  machine->WriteRegister(StackReg, topStackPtr);
+
+
+  free(myfunction);
+
+  machine->Run();
+}

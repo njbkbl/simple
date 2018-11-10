@@ -1,0 +1,29 @@
+// Family of object with similar behavior
+Car -> Start(); Move();
+Bycicle -> Start(); Move();
+Bus -> Start(); Move(); Pay();
+Foot -> Start(); Move(); Lace();
+
+// Describing the family of the object, what they have in common
+public interface vehicle {
+	public void start();
+	public void move();
+}
+
+// If you make a new class that implements an interface,
+// you have to implement the methods defined in the interface.
+public class monowheel implements vehicle
+
+// Hard coding
+Car c = new Car();
+c.move();
+
+// Softer, because you can use whatever vehicle you want
+Vehicle c = new Bycicle();
+c.move()
+
+// Doesn't matter how you sort, what is important is that it is sorted after
+// calling the sort() method.
+public interface whatver() {
+    public void sort(int[] i);
+}
